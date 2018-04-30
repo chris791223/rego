@@ -15,16 +15,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 
 /*
 Route::get('/admin', function(){
     return view('admin.index');
 });
 */
+/*
+Route::group(['middleware'=>'admin'], function(){
+    Route::resource('/admin', 'AdminController');
 
+    Route::resource('/admin/restaurants', 'AdminRestaurantsController');
+
+    Route::resource('/admin/restaurant/tables', 'AdminRestaurantTablesController');
+
+    Route::post('/admin/restaurant/tables/add_all', 'AdminRestaurantTablesController@insertAll');
+    Route::post('/admin/restaurant/tables/edit_all', 'AdminRestaurantTablesController@updateAll');
+});
+*/
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/admin', 'AdminController');
 
@@ -35,8 +48,6 @@ Route::resource('/admin/restaurant/tables', 'AdminRestaurantTablesController');
 Route::post('/admin/restaurant/tables/add_all', 'AdminRestaurantTablesController@insertAll');
 Route::post('/admin/restaurant/tables/edit_all', 'AdminRestaurantTablesController@updateAll');
 
-Route::get('/home', 'HomeController@index')->name('home');
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+

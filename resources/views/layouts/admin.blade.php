@@ -16,15 +16,13 @@
     <link href="{{asset('css/app.css')}}" rel="stylesheet">
 
 
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-
-
 
 
 </head>
@@ -47,61 +45,39 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Home</a>
+            <a class="navbar-brand" href="/admin">REGO Admin</a>
         </div>
-        <!-- /.navbar-header -->
 
 
 
-        <ul class="nav navbar-top-links navbar-right">
 
+        <ul class="navbar-nav ml-auto" id="user-status">
+            <!-- Authentication Links -->
+            @guest
+                <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                <li>&nbsp;&nbsp;</li>
+                <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
+            @else
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        {{ Auth::user()->name }} <span class="caret"></span>
+                    </a>
 
-            <!-- /.dropdown -->
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user" style="height: auto;">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-user -->
-            </li>
-            <!-- /.dropdown -->
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
 
-
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            @endguest
         </ul>
-
-
-
-
-
-
-        {{--<ul class="nav navbar-nav navbar-right">--}}
-        {{--@if(auth()->guest())--}}
-        {{--@if(!Request::is('auth/login'))--}}
-        {{--<li><a href="{{ url('/auth/login') }}">Login</a></li>--}}
-        {{--@endif--}}
-        {{--@if(!Request::is('auth/register'))--}}
-        {{--<li><a href="{{ url('/auth/register') }}">Register</a></li>--}}
-        {{--@endif--}}
-        {{--@else--}}
-        {{--<li class="dropdown">--}}
-        {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ auth()->user()->name }} <span class="caret"></span></a>--}}
-        {{--<ul class="dropdown-menu" role="menu">--}}
-        {{--<li><a href="{{ url('/auth/logout') }}">Logout</a></li>--}}
-
-        {{--<li><a href="{{ url('/admin/profile') }}/{{auth()->user()->id}}">Profile</a></li>--}}
-        {{--</ul>--}}
-        {{--</li>--}}
-        {{--@endif--}}
-        {{--</ul>--}}
-
 
 
         <div class="navbar-default sidebar" role="navigation">
@@ -124,15 +100,18 @@
 
 
                     <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> Restaurant Management<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> Restaurant Management<span
+                                    class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             @foreach($restaurants as $restaurant)
-                            <li>
-                                <a href="{{route('restaurants.edit', $restaurant->id)}}"><i class="fa fa-wrench fa-fw"></i> {{$restaurant->name}}</a>
-                            </li>
+                                <li>
+                                    <a href="{{route('restaurants.edit', $restaurant->id)}}"><i
+                                                class="fa fa-wrench fa-fw"></i> {{$restaurant->name}}</a>
+                                </li>
                             @endforeach
                             <li>
-                                <a href="{{route('restaurants.create')}}"><i class="fa fa-plus-square fa-fw"></i> Add new restaurant</a>
+                                <a href="{{route('restaurants.create')}}"><i class="fa fa-plus-square fa-fw"></i> Add
+                                    new restaurant</a>
                             </li>
 
                         </ul>
@@ -152,19 +131,15 @@
 </div>
 
 
-
-
-
-
 <!-- Page Content -->
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
 
 
-            @yield('content')
+        @yield('content')
 
-            <!-- /.col-lg-12 -->
+        <!-- /.col-lg-12 -->
         </div>
         <!-- /.row -->
     </div>
@@ -180,9 +155,6 @@
 
 
 @yield('footer')
-
-
-
 
 
 </body>
