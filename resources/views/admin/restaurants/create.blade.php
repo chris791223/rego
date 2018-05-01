@@ -2,22 +2,23 @@
 
 
 
+
 @section('content')
 
-    <h2 class="align-content-lg-center">Create New Restaurant</h2>
+    <h2 class="align-content-lg-center">{{__('admin.create_new_rest')}}</h2>
 
     <form class="form-horizontal" method="POST" action="/admin/restaurants" enctype="multipart/form-data">
         {{ csrf_field() }}
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="name">Name:</label>
+            <label class="control-label col-sm-2" for="name">{{__('admin.name')}}:</label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter restaurant name">
+                <input type="text" class="form-control" id="name" name="name" placeholder="{{__('admin.enter_rest_name')}}">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="logo">Logo:</label>
+            <label class="control-label col-sm-2" for="logo">{{__('admin.logo')}}:</label>
             <div class="col-sm-10">
                 <img id="logo_image_preview" src="" class="img-rounded" alt="" width="167px" height="86px">
                 <label id="file_choose_msg" class="control-label text-danger bg-warning"></label>
@@ -60,66 +61,82 @@
         </script>
 
 
-
-
         <div class="form-group">
-            <label class="control-label col-sm-2" for="description">Description:</label>
+            <label class="control-label col-sm-2" for="description">{{__('admin.description')}}:</label>
             <div class="col-sm-10">
                 <textarea class="form-control rounded-0" id="description" name="description" rows="5"
-                          placeholder="Enter description"></textarea>
+                          placeholder="{{__('admin.enter_desc')}}"></textarea>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="city">City:</label>
+            <label class="control-label col-sm-2" for="city">{{__('admin.city')}}:</label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" id="city" name="city" placeholder="Enter city">
+                <input type="text" class="form-control" id="city" name="city" placeholder="{{__('admin.enter_city')}}">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="address">Address:</label>
+            <label class="control-label col-sm-2" for="address">{{__('admin.address')}}:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="address" name="address" placeholder="Enter address">
+                <input type="text" class="form-control" id="address" name="address" placeholder="E{{__('admin.enter_addr')}}">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="postal_code">Postal Code:</label>
+            <label class="control-label col-sm-2" for="postal_code">{{__('admin.postal_code')}}:</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="postal_code" name="postal_code"
-                       placeholder="Enter postal code">
+                       placeholder="{{__('admin.enter_postal_code')}}">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="cuisine_style">Cuisine Style:</label>
+            <label class="control-label col-sm-2" for="cuisine_style">{{__('admin.cuisine_style')}}:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="cuisine_style" name="cuisine_style"
-                       placeholder="Enter cuisine style">
+                       placeholder="{{__('admin.enter_cuisine_style')}}">
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="popular_menu">Popular Menu:</label>
+            <label class="control-label col-sm-2" for="popular_menu">{{__('admin.popular_menu')}}:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="popular_menu" name="popular_menu"
-                       placeholder="Enter popupar men">
+                       placeholder="{{__('admin.enter_pop_menu')}}">
             </div>
         </div>
+
+
         <div class="form-group">
-            <label class="control-label col-sm-2" for="operation_from">Operation Starts:</label>
+            <label class="control-label col-sm-2" for="operation_from">{{__('admin.operation_s')}}:</label>
             <div class="col-sm-3">
-                <input type="text" class="form-control" id="operation_from" name="operation_from"
-                       placeholder="Enter operation starts from">
+                <select class="form-control" id="operation_from" name="operation_from">
+                    @for($date = date_time_set(date_create(now()), 0, 0, 0); $date < date_time_set(date_create(now()), 24, 0, 0); date_add($date,date_interval_create_from_date_string("30 minutes")))
+                        @if (date_format($date, "H:i:s") == '11:00:00')
+                            <option value="{{date_format($date, "H:i")}}" selected>{{date_format($date, "H:i")}}</option>
+                        @else
+                            <option value="{{date_format($date, "H:i")}}">{{date_format($date, "H:i")}}</option>
+                        @endif
+                    @endfor
+                </select>
             </div>
         </div>
+
+
         <div class="form-group">
-            <label class="control-label col-sm-2" for="operation_to">Operation Ends:</label>
+            <label class="control-label col-sm-2" for="operation_to">{{__('admin.operation_e')}}:</label>
             <div class="col-sm-3">
-                <input type="text" class="form-control" id="operation_to" name="operation_to"
-                       placeholder="Enter operation ends at">
+                <select class="form-control" id="operation_to" name="operation_to">
+                    @for($date = date_time_set(date_create(now()), 0, 0, 0); $date < date_time_set(date_create(now()), 24, 0, 0); date_add($date,date_interval_create_from_date_string("30 minutes")))
+                        @if (date_format($date, "H:i:s") == '22:00:00')
+                            <option value="{{date_format($date, "H:i")}}" selected>{{date_format($date, "H:i")}}</option>
+                        @else
+                            <option value="{{date_format($date, "H:i")}}">{{date_format($date, "H:i")}}</option>
+                        @endif
+                    @endfor
+                </select>
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="reset" class="btn btn-default">Reset</button>
-                <button type="submit" class="btn btn-default">Save Restaurant</button>
+                <button type="reset" class="btn btn-default">{{__('admin.reset')}}</button>
+                <button type="submit" class="btn btn-default">{{__('admin.save_rest')}}</button>
             </div>
         </div>
     </form>

@@ -39,6 +39,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+
 Route::resource('/admin', 'AdminController');
 
 Route::resource('/admin/restaurants', 'AdminRestaurantsController');
@@ -47,6 +48,11 @@ Route::resource('/admin/restaurant/tables', 'AdminRestaurantTablesController');
 
 Route::post('/admin/restaurant/tables/add_all', 'AdminRestaurantTablesController@insertAll');
 Route::post('/admin/restaurant/tables/edit_all', 'AdminRestaurantTablesController@updateAll');
+
+Route::get('/change_language/{locale}', function ($locale) {
+    setcookie('my_locale', $locale, time() + (86400 * 30), "/");
+    return redirect()->back();
+});
 
 
 

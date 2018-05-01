@@ -5,9 +5,9 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Restaurant Name</th>
-            <th>City</th>
-            <th>Address</th>
+            <th>{{__('admin.rest_name')}}</th>
+            <th>{{__('admin.city')}}</th>
+            <th>{{__('admin.address')}}</th>
         </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
     </table>
 
     <form method="get" action="/admin/restaurants/create">
-        <button type="sumbit" class="btn btn-default">Create New Restaurant</button>
+        <button type="sumbit" class="btn btn-default">{{__('admin.create_new_rest')}}</button>
     </form>
 
 

@@ -68,7 +68,7 @@
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
+                            {{ __('app.logout') }}
                         </a>
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -77,6 +77,9 @@
                     </div>
                 </li>
             @endguest
+            <li>&nbsp;&nbsp;&nbsp;</li>
+            <li>&nbsp;&nbsp;&nbsp;</li>
+            <li><a class="nav-link" href="/change_language/{{ Illuminate\Support\Str::lower(__('app.language'))}}">{{ __('app.language') }}</a></li>
         </ul>
 
 
@@ -85,7 +88,7 @@
                 <ul class="nav" id="side-menu">
                     <li class="sidebar-search">
                         <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search...">
+                            <input type="text" class="form-control" placeholder="{{__("admin.search")}}">
                             <span class="input-group-btn">
                                     <button class="btn btn-default" type="button">
                                         <i class="fa fa-search"></i>
@@ -95,12 +98,12 @@
                         <!-- /input-group -->
                     </li>
                     <li>
-                        <a href="/admin"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        <a href="/admin"><i class="fa fa-dashboard fa-fw"></i> {{__('admin.dashboard')}}</a>
                     </li>
 
 
                     <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> Restaurant Management<span
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> {{__('admin.rest_management')}}<span
                                     class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             @foreach($restaurants as $restaurant)
@@ -110,8 +113,7 @@
                                 </li>
                             @endforeach
                             <li>
-                                <a href="{{route('restaurants.create')}}"><i class="fa fa-plus-square fa-fw"></i> Add
-                                    new restaurant</a>
+                                <a href="{{route('restaurants.create')}}"><i class="fa fa-plus-square fa-fw"></i> {{__('admin.create_new_rest')}}</a>
                             </li>
 
                         </ul>

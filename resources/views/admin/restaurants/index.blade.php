@@ -5,9 +5,9 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Restaurant Name</th>
-            <th>City</th>
-            <th>Address</th>
+            <th>{{__('admin.rest_name')}}</th>
+            <th>{{__('admin.city')}}</th>
+            <th>{{__('admin.address')}}</th>
         </tr>
         </thead>
         <tbody>

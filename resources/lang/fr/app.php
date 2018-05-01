@@ -1,4 +1,7 @@
+
 <?php
+
+
 
 return [
 
@@ -13,7 +16,15 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'login' => 'Connexion',
+    'register' => 'Registre',
+    'email' => 'Adresse de messagerie',
+    'password' => 'Mot de passe',
+    'remember' => 'Garder ma session ouverte',
+    'forgot' => 'Mot de passe oublié??',
+    'name' => 'Nom & prénom',
+    'confirm' => 'Confirmez le mot de passe',
+    'language' => 'EN',
+    'logout' => 'Connectez Out',
 
 ];
