@@ -6,6 +6,7 @@ use App\Table;
 use App\Restaurant;
 use App\SeatingType;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AdminRestaurantTablesController extends Controller
 {
@@ -13,6 +14,7 @@ class AdminRestaurantTablesController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -120,13 +122,38 @@ class AdminRestaurantTablesController extends Controller
 
                 $table->update(['restaurant_id' => $restaurant_id, 'table_number' => $table_number,
                     'number_of_person' => $number_of_person, 'seating_type_id' => $seating_type_id,
-                    'is_available'=>$is_available, 'at_smoking_area'=>$at_smoking_area]);
+                    'is_available' => $is_available, 'at_smoking_area' => $at_smoking_area]);
             } // delete
             else {
                 $table->delete();
             }
         }
 
+        // CHANGE TO: AJAX request, Just in case of delete, need to refresh
+
+        // prepare return JSON
+        $array_added_new_tables_for_return = array("new_tables" => array());
+
+        $restaurant = Restaurant::findOrFail($restaurant_id);
+        $tables = $restaurant->tables;
+        // ADD: prepare data for return (array -> JSON)
+        foreach ($tables as $table){
+
+
+            $added_table = array(
+                "id" => $table->id,
+                "table_number" => $table->table_number,
+                "number_of_person" => $table->number_of_person,
+                "seating_type" => $table->seating_type_id,
+                "is_available" => $table->is_available,
+                "smoking_area" => $table->at_smoking_area
+            );
+            array_push($array_added_new_tables_for_return["new_tables"], $added_table);
+
+        }
+
+        return response()->json($array_added_new_tables_for_return, 200);
+        /*
         $restaurant = Restaurant::findOrFail($restaurant_id);
         $restaurants = Restaurant::all();
         $seating_types = SeatingType::all();
@@ -137,7 +164,9 @@ class AdminRestaurantTablesController extends Controller
         }else{
             $max_table_number = 0;
         }
+
         return view('admin.restaurants.edit', compact('restaurant', 'restaurants', 'seating_types', 'tables', 'max_table_number'));
+        */
     }
 
     /**
@@ -153,6 +182,9 @@ class AdminRestaurantTablesController extends Controller
 
         // get restaurant id
         $restaurant_id = $request->restaurant_id;
+
+        // prepare return JSON
+        $array_added_new_tables_for_return = array("new_tables" => array());
 
         for ($idx = 0; $idx < $number_of_record; $idx++) {
             $v_name = "delete_flag" . $idx;
@@ -179,10 +211,36 @@ class AdminRestaurantTablesController extends Controller
 
                 Table::create(['restaurant_id' => $restaurant_id, 'table_number' => $table_number,
                     'number_of_person' => $number_of_person, 'seating_type_id' => $seating_type_id,
-                    'is_available'=>$is_available, 'at_smoking_area'=>$at_smoking_area]);
+                    'is_available' => $is_available, 'at_smoking_area' => $at_smoking_area]);
+
             }
         }
 
+
+
+        // CHANGE TO AJAX request
+
+        $restaurant = Restaurant::findOrFail($restaurant_id);
+        $tables = $restaurant->tables;
+        // ADD: prepare data for return (array -> JSON)
+        foreach ($tables as $table){
+
+
+            $added_table = array(
+                "id" => $table->id,
+                "table_number" => $table->table_number,
+                "number_of_person" => $table->number_of_person,
+                "seating_type" => $table->seating_type_id,
+                "is_available" => $table->is_available,
+                "smoking_area" => $table->at_smoking_area
+            );
+            array_push($array_added_new_tables_for_return["new_tables"], $added_table);
+
+        }
+
+        return response()->json($array_added_new_tables_for_return, 200);
+
+        /*
         $restaurant = Restaurant::findOrFail($restaurant_id);
         $restaurants = Restaurant::all();
         $seating_types = SeatingType::all();
@@ -190,11 +248,11 @@ class AdminRestaurantTablesController extends Controller
         // get max table_number
         if (count($tables) > 0) {
             $max_table_number = $tables->last()->table_number;
-        }else{
+        } else {
             $max_table_number = 0;
         }
         return view('admin.restaurants.edit', compact('restaurant', 'restaurants', 'seating_types', 'tables', 'max_table_number'));
-
+        */
     }
 
     /**

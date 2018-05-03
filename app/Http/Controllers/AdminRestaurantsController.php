@@ -92,6 +92,7 @@ class AdminRestaurantsController extends Controller
         $seating_types = SeatingType::all();
         $tables = $restaurant->tables;
 
+        /*
         // get max table_number
         if (count($tables) > 0) {
             $max_table_number = $tables->last()->table_number;
@@ -99,7 +100,9 @@ class AdminRestaurantsController extends Controller
             $max_table_number = 0;
         }
 
-        return view('admin.restaurants.edit', compact('restaurant', 'restaurants', 'seating_types', 'tables', 'max_table_number'));
+        */
+
+        return view('admin.restaurants.edit', compact('restaurant', 'restaurants', 'seating_types', 'tables'));
     }
 
     /**

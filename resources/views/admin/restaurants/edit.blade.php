@@ -153,10 +153,20 @@
         <strong>{{__('admin.editor')}}: </strong> {{__('admin.edit_table_info')}}
     </div>
 
-    <form class="form-horizontal" method="POST" action="/admin/restaurant/tables/edit_all">
+    <!--
+    CHANGE: refresh dining table edit area using AJAX, instead of refresh the whole page
+    <form id="edit_table_form" class="form-horizontal" method="POST" action="/admin/restaurant/tables/edit_all">
+    -->
+    <form id="edit_table_form" class="form-horizontal">
+
         <div style="max-height: 550px; overflow-y: scroll">
 
             {{ csrf_field() }}
+            <input type="hidden" name="number_of_record" id="number_of_record"
+                   value="{{count($tables)}}">
+            <input type="hidden" name="restaurant_id" id="restaurant_id"
+                   value="{{$restaurant->id}}">
+
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
@@ -168,13 +178,53 @@
                     <th>{{__('admin.delete')}}</th>
                 </tr>
                 </thead>
-                <tbody>
 
-                <input type="hidden" name="number_of_record" id="number_of_record"
-                       value="{{count($tables)}}">
-                <input type="hidden" name="restaurant_id" id="restaurant_id"
-                       value="{{$restaurant->id}}">
+                <!--add a hidden line for jquery.clone()-->
+                <tr id="edit_table_line" hidden="hidden">
+                    <td width="14%">
+                        <input type="hidden" name="table_id" id="table_id">
+                        <input class="form-control" type="text" name="table_number" id="table_number"
+                               readonly="readonly">
+                    </td>
+                    <td width="20%">
+                        <select class="form-control" name="number_of_person"
+                                id="number_of_person">
+                            @php($max_capacity = 20)
 
+                            @for ($idx = 1; $idx <= $max_capacity; $idx++)
+                                <option value="{{$idx}}">{{$idx}}</option>
+                            @endfor
+                        </select>
+
+                    </td>
+                    <td width="20%">
+                        <select class="form-control" name="seating_type"
+                                id="seating_type">
+                            @foreach($seating_types as $type)
+                                <option value="{{$type->id}}">{{$type->name}}</option>
+                            @endforeach
+                        </select>
+                    </td>
+
+                    <td>
+                        <label class="radio-inline"><input type="radio" id="is_available1" name="is_available"
+                                                           value="1">{{__('admin.yes')}}</label>
+                        <label class="radio-inline"><input type="radio" id="is_available2" name="is_available"
+                                                           value="0">{{__('admin.no')}}</label>
+                    </td>
+                    <td>
+                        <label class="radio-inline"><input type="radio" id="smoking_area1" name="smoking_area"
+                                                           value="1">{{__('admin.yes')}}</label>
+                        <label class="radio-inline"><input type="radio" id="smoking_area2" name="smoking_area"
+                                                           value="0">{{__('admin.no')}}</label>
+                    </td>
+                    <td>
+                        <label class="checkbox-inline"><input type="checkbox" id="delete_flag" name="delete_flag"
+                                                              value="1">&nbsp;</label>
+                    </td>
+
+                </tr>
+                <tbody id="edit_table_body">
                 @foreach($tables as $key=>$table )
                     <tr>
                         <td width="14%">
@@ -258,11 +308,100 @@
         </div>
         <div class="form-group">
             <div class="col-sm-10">
-                <button type="submit" class="btn btn-default">{{__('admin.save_changes')}}</button>
+                <button type="button" class="btn btn-default"
+                        onclick="update_db()">{{__('admin.save_changes')}}</button>
             </div>
         </div>
 
     </form>
+
+    <script>
+        // don't need to refresh dining table info  => NEED refresh just in case of delete
+        function update_db() {
+            var form_data = $("#edit_table_form").serializeArray();
+
+            $.ajax({
+                type: 'post',
+                url: '/admin/restaurant/tables/edit_all',
+                data: form_data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                },
+                success: function (data, textStatus) {
+                    // REFRESH dining table info, instead of the whole page
+
+                    // empty table body
+                    $("#edit_table_body").empty();
+
+                    //set total number of record
+                    $("#number_of_record").attr("value", data.new_tables.length);
+
+                    var cloned_node;
+                    var dining_table;
+                    for (var idx = 0; idx < data.new_tables.length; idx++) {
+                        dining_table = data.new_tables[idx];
+
+                        // clone
+                        cloned_node = $("#edit_table_line").clone();
+
+                        cloned_node.removeAttr("hidden");
+                        cloned_node.attr('id', 'edit_table_line' + idx);
+
+                        // set id
+                        cloned_node.find("#table_id").attr('value', dining_table.id);
+                        // set table_number
+                        cloned_node.find("#table_number").attr('value', dining_table.table_number);
+                        // set number of person
+                        cloned_node.find("#number_of_person").prop("selectedIndex", dining_table.number_of_person - 1);
+                        // set seating type
+                        cloned_node.find("#seating_type").prop("selectedIndex", dining_table.seating_type - 1);
+                        // set is available
+                        if (dining_table.is_available == 1) {
+                            cloned_node.find("#is_available1").prop("checked", true);
+                        } else {
+                            cloned_node.find("#is_available2").prop("checked", true);
+                        }
+                        // set smoking_area
+                        if (dining_table.smoking_area == 1) {
+                            cloned_node.find("#smoking_area1").prop("checked", true);
+                        } else {
+                            cloned_node.find("#smoking_area2").prop("checked", true);
+                        }
+
+                        // change id & name for table_id
+                        cloned_node.find("#table_id").attr("name", "table_id" + idx).attr("id", "table_id" + idx);
+                        // change id & name for table_number
+                        cloned_node.find("#table_number").attr("name", "table_number" + idx).attr("id", "table_number" + idx);
+                        // change id & name for number_of_person
+                        cloned_node.find("#number_of_person").attr("name", "number_of_person" + idx).attr("id", "number_of_person" + idx);
+                        // change id & name for seating_type
+                        cloned_node.find("#seating_type").attr("name", "seating_type" + idx).attr("id", "seating_type" + idx);
+                        // change id & name for is_available
+                        cloned_node.find("#is_available1").attr("name", "is_available" + idx).attr("id", "is_available1" + idx);
+                        cloned_node.find("#is_available2").attr("name", "is_available" + idx).attr("id", "is_available2" + idx);
+                        // change id & name for smoking_area
+                        cloned_node.find("#smoking_area1").attr("name", "smoking_area" + idx).attr("id", "smoking_area1" + idx);
+                        cloned_node.find("#smoking_area2").attr("name", "smoking_area" + idx).attr("id", "smoking_area2" + idx);
+                        // change id & name for delete_flag
+                        cloned_node.find("#delete_flag").attr("name", "delete_flag" + idx).attr("id", "delete_flag" + idx);
+
+                        // append table line to table
+                        cloned_node.appendTo("#edit_table_body");
+
+                    }
+
+                    // prompt a information message
+                    alert('Successful: dining table information has been updated.');
+
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    alert('Failed: did not update dining table information.');
+                }
+            });
+
+        }
+    </script>
 
     <!--Add new tables-->
     @php($max_lines = 20)
@@ -296,6 +435,15 @@
             //set the total number of records for adding
             $("#number_of_record_for_add").attr("value", lines);
 
+            // get existing max table number
+            var max_table_number;
+            if ($("#edit_table_body tr:last td:first input:last").length) {
+                max_table_number = parseInt($("#edit_table_body tr:last td:first input:last").val());
+            } else {
+                max_table_number = 0;
+            }
+
+
             // add new lines to table
             for (var idx = 0; idx < lines; idx++) {
                 cloned_node = $("#new_table_line").clone();
@@ -303,9 +451,13 @@
                 cloned_node.removeAttr("hidden");
                 cloned_node.attr('id', 'new_table_line' + idx);
 
-                var selectedIndex = cloned_node.find("#table_number").prop("selectedIndex");
+                // set default table_number => CHANGE to the following way
+                //var selectedIndex = cloned_node.find("#table_number").prop("selectedIndex");
+                //cloned_node.find("#table_number").prop("selectedIndex", selectedIndex + idx);
+
                 // set default table_number
-                cloned_node.find("#table_number").prop("selectedIndex", selectedIndex + idx);
+                cloned_node.find("#table_number").prop("selectedIndex", max_table_number + idx);
+
                 // change id & name for table_number
                 cloned_node.find("#table_number").attr("name", "table_number" + idx).attr("id", "table_number" + idx);
                 // change id & name for number_of_person
@@ -337,7 +489,10 @@
 
             <!-- Modal content-->
             <div class="modal-content">
+                <!-- CHANGE TO: AJAX request
                 <form class="form-horizontal" method="POST" action="/admin/restaurant/tables/add_all">
+                -->
+                <form id="new_table_form" class="form-horizontal">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" onclick="rollback_tables()">&times;
                         </button>
@@ -365,7 +520,7 @@
                                     <th>{{__('admin.delete')}}</th>
                                 </tr>
                                 </thead>
-
+                                <!--hidden line for JQuery.clone()-->
                                 <tr id="new_table_line" hidden="hidden">
                                     <td width="20%">
                                         <select class="form-control" name="table_number"
@@ -373,11 +528,7 @@
                                             @php($max_table_number_init = 100)
 
                                             @for ($idx = 1; $idx <= $max_table_number_init; $idx++)
-                                                @if ($idx == $max_table_number + 1)
-                                                    <option value="{{$idx}}" selected>{{$idx}}</option>
-                                                @else
-                                                    <option value="{{$idx}}">{{$idx}}</option>
-                                                @endif
+                                                <option value="{{$idx}}">{{$idx}}</option>
                                             @endfor
                                         </select>
 
@@ -456,12 +607,100 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="sumbit" class="btn btn-default pull-left">{{__('admin.add_new_dining_tables')}}</button>
+                        <button type="button" onclick="update_db_and_refresh_dining_table_info()"
+                                class="btn btn-default pull-left">{{__('admin.add_new_dining_tables')}}</button>
                         <button type="button" class="btn btn-default pull-left" data-dismiss="modal"
                                 onclick="rollback_tables()">{{__('admin.close')}}
                         </button>
                     </div>
                 </form>
+
+                <script type="text/javascript">
+                    function update_db_and_refresh_dining_table_info() {
+                        var form_data = $("#new_table_form").serializeArray();
+
+                        $.ajax({
+                            type: 'post',
+                            url: '/admin/restaurant/tables/add_all',
+                            data: form_data,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                            },
+                            success: function (data, textStatus) {
+                                // REFRESH dining table info, instead of the whole page
+
+                                // empty table body
+                                $("#edit_table_body").empty();
+
+                                //set total number of record
+                                $("#number_of_record").attr("value", data.new_tables.length);
+
+                                var cloned_node;
+                                var dining_table;
+                                for (var idx = 0; idx < data.new_tables.length; idx++) {
+                                    dining_table = data.new_tables[idx];
+
+                                    // clone
+                                    cloned_node = $("#edit_table_line").clone();
+
+                                    cloned_node.removeAttr("hidden");
+                                    cloned_node.attr('id', 'edit_table_line' + idx);
+
+                                    // set id
+                                    cloned_node.find("#table_id").attr('value', dining_table.id);
+                                    // set table_number
+                                    cloned_node.find("#table_number").attr('value', dining_table.table_number);
+                                    // set number of person
+                                    cloned_node.find("#number_of_person").prop("selectedIndex", dining_table.number_of_person - 1);
+                                    // set seating type
+                                    cloned_node.find("#seating_type").prop("selectedIndex", dining_table.seating_type - 1);
+                                    // set is available
+                                    if (dining_table.is_available == 1) {
+                                        cloned_node.find("#is_available1").prop("checked", true);
+                                    } else {
+                                        cloned_node.find("#is_available2").prop("checked", true);
+                                    }
+                                    // set smoking_area
+                                    if (dining_table.smoking_area == 1) {
+                                        cloned_node.find("#smoking_area1").prop("checked", true);
+                                    } else {
+                                        cloned_node.find("#smoking_area2").prop("checked", true);
+                                    }
+
+                                    // change id & name for table_id
+                                    cloned_node.find("#table_id").attr("name", "table_id" + idx).attr("id", "table_id" + idx);
+                                    // change id & name for table_number
+                                    cloned_node.find("#table_number").attr("name", "table_number" + idx).attr("id", "table_number" + idx);
+                                    // change id & name for number_of_person
+                                    cloned_node.find("#number_of_person").attr("name", "number_of_person" + idx).attr("id", "number_of_person" + idx);
+                                    // change id & name for seating_type
+                                    cloned_node.find("#seating_type").attr("name", "seating_type" + idx).attr("id", "seating_type" + idx);
+                                    // change id & name for is_available
+                                    cloned_node.find("#is_available1").attr("name", "is_available" + idx).attr("id", "is_available1" + idx);
+                                    cloned_node.find("#is_available2").attr("name", "is_available" + idx).attr("id", "is_available2" + idx);
+                                    // change id & name for smoking_area
+                                    cloned_node.find("#smoking_area1").attr("name", "smoking_area" + idx).attr("id", "smoking_area1" + idx);
+                                    cloned_node.find("#smoking_area2").attr("name", "smoking_area" + idx).attr("id", "smoking_area2" + idx);
+                                    // change id & name for delete_flag
+                                    cloned_node.find("#delete_flag").attr("name", "delete_flag" + idx).attr("id", "delete_flag" + idx);
+
+                                    // append table line to table
+                                    cloned_node.appendTo("#edit_table_body");
+
+                                }
+
+
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                alert('Failed: did not update dining table information.');
+                            }
+                        });
+
+                        $("#add_new_tables_modal").modal('hide');  // hide the modal window
+                        rollback_tables();  // clear lines in the modal for next adding
+
+                    }
+                </script>
             </div>
         </div>
     </div>
