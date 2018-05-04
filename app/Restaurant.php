@@ -23,10 +23,10 @@ class Restaurant extends Model
         return $this->hasMany('App\Table')->orderBy("table_number");
     }
 
-//    public function getLogoAttribute($value){
-//        $path = '/images/restaurant-img/';
-//        return $path . $value;
-//    }
+    public function getLogoAttribute($value){
+        $path = '/images/restaurant-img/';
+        return $path . $value;
+    }
 
 
 }

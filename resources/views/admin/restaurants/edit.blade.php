@@ -25,7 +25,7 @@
             <label class="control-label col-sm-2" for="logo">{{__('admin.logo')}}:</label>
             <div class="col-sm-10">
 
-                <img id="logo_image_preview" src="\images\restaurant-img\{{$restaurant->logo}}" class="img-rounded"
+                <img id="logo_image_preview" src="{{$restaurant->logo}}" class="img-rounded"
                      alt="{{$restaurant->name}}" width="167px" height="86px">
 
                 <label id="file_choose_msg" class="control-label text-danger bg-warning"></label>

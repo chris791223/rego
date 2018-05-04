@@ -53,7 +53,7 @@ class AdminRestaurantsController extends Controller
             // set new image file
             $name = md5(time()).random_int(5,5).'.'.$image->getClientOriginalExtension();
             // set directory
-            $destination_path = public_path('/images/restaurant-img');
+            $destination_path = 'images/restaurant-img';
             // move file to directory
             $image->move($destination_path, $name);
 
@@ -124,7 +124,9 @@ class AdminRestaurantsController extends Controller
             // set new image file
             $name = md5(time()).random_int(5,5).'.'.$image->getClientOriginalExtension();
             // set directory
-            $destination_path = public_path('/images/restaurant-img');
+            // for hosting with right directory
+            //$destination_path = public_path('/images/restaurant-img');
+            $destination_path ='images/restaurant-img';
             // move file to directory
             $image->move($destination_path, $name);
 
