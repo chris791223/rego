@@ -13,7 +13,8 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="name">{{__('admin.name')}}:</label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" id="name" name="name" placeholder="{{__('admin.enter_rest_name')}}">
+                <input type="text" class="form-control" id="name" name="name" required="required"
+                       placeholder="{{__('admin.enter_rest_name')}}">
             </div>
         </div>
 
@@ -64,40 +65,42 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="description">{{__('admin.description')}}:</label>
             <div class="col-sm-10">
-                <textarea class="form-control rounded-0" id="description" name="description" rows="5"
-                          placeholder="{{__('admin.enter_desc')}}"></textarea>
+                <textarea class="form-control rounded-0" id="description" name="description" required="required"
+                          rows="5" placeholder="{{__('admin.enter_desc')}}"></textarea>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="city">{{__('admin.city')}}:</label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" id="city" name="city" placeholder="{{__('admin.enter_city')}}">
+                <input type="text" class="form-control" id="city" name="city" required="required"
+                       placeholder="{{__('admin.enter_city')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="address">{{__('admin.address')}}:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="address" name="address" placeholder="E{{__('admin.enter_addr')}}">
+                <input type="text" class="form-control" id="address" name="address" required="required"
+                       placeholder="E{{__('admin.enter_addr')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="postal_code">{{__('admin.postal_code')}}:</label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" id="postal_code" name="postal_code"
+                <input type="text" class="form-control" id="postal_code" name="postal_code" required="required"
                        placeholder="{{__('admin.enter_postal_code')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="cuisine_style">{{__('admin.cuisine_style')}}:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="cuisine_style" name="cuisine_style"
+                <input type="text" class="form-control" id="cuisine_style" name="cuisine_style" required="required"
                        placeholder="{{__('admin.enter_cuisine_style')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="popular_menu">{{__('admin.popular_menu')}}:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="popular_menu" name="popular_menu"
+                <input type="text" class="form-control" id="popular_menu" name="popular_menu" required="required"
                        placeholder="{{__('admin.enter_pop_menu')}}">
             </div>
         </div>
@@ -109,7 +112,8 @@
                 <select class="form-control" id="operation_from" name="operation_from">
                     @for($date = date_time_set(date_create(now()), 0, 0, 0); $date < date_time_set(date_create(now()), 24, 0, 0); date_add($date,date_interval_create_from_date_string("30 minutes")))
                         @if (date_format($date, "H:i:s") == '11:00:00')
-                            <option value="{{date_format($date, "H:i")}}" selected>{{date_format($date, "H:i")}}</option>
+                            <option value="{{date_format($date, "H:i")}}"
+                                    selected>{{date_format($date, "H:i")}}</option>
                         @else
                             <option value="{{date_format($date, "H:i")}}">{{date_format($date, "H:i")}}</option>
                         @endif
@@ -125,7 +129,8 @@
                 <select class="form-control" id="operation_to" name="operation_to">
                     @for($date = date_time_set(date_create(now()), 0, 0, 0); $date < date_time_set(date_create(now()), 24, 0, 0); date_add($date,date_interval_create_from_date_string("30 minutes")))
                         @if (date_format($date, "H:i:s") == '22:00:00')
-                            <option value="{{date_format($date, "H:i")}}" selected>{{date_format($date, "H:i")}}</option>
+                            <option value="{{date_format($date, "H:i")}}"
+                                    selected>{{date_format($date, "H:i")}}</option>
                         @else
                             <option value="{{date_format($date, "H:i")}}">{{date_format($date, "H:i")}}</option>
                         @endif

@@ -17,7 +17,7 @@
             <label class="control-label col-sm-2" for="name">{{__('admin.name')}}:</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="name" name="name" value="{{$restaurant->name}}"
-                       placeholder="{{__('admin.enter_rest_name')}}">
+                       required="required" placeholder="{{__('admin.enter_rest_name')}}">
             </div>
         </div>
 
@@ -71,6 +71,7 @@
             <label class="control-label col-sm-2" for="description">{{__('admin.description')}}:</label>
             <div class="col-sm-10">
                 <textarea class="form-control rounded-0" id="description" name="description" rows="5"
+                          required="required"
                           placeholder="{{__('admin.enter_desc')}}">{{$restaurant->description}}</textarea>
             </div>
         </div>
@@ -78,35 +79,38 @@
             <label class="control-label col-sm-2" for="city">{{__('admin.city')}}:</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="city" name="city" value="{{$restaurant->city}}"
-                       placeholder="{{__('admin.enter_city')}}">
+                       required="required" placeholder="{{__('admin.enter_city')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="address">{{__('admin.address')}}:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="address" name="address" value="{{$restaurant->address}}"
-                       placeholder="{{__('admin.enter_addr')}}">
+                       required="required" placeholder="{{__('admin.enter_addr')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="postal_code">{{__('admin.postal_code')}}:</label>
             <div class="col-sm-5">
                 <input type="text" class="form-control" id="postal_code" name="postal_code"
-                       value="{{$restaurant->postal_code}}" placeholder="{{__('admin.enter_postal_code')}}">
+                       value="{{$restaurant->postal_code}}" required="required"
+                       placeholder="{{__('admin.enter_postal_code')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="cuisine_style">{{__('admin.cuisine_style')}}:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="cuisine_style" name="cuisine_style"
-                       value="{{$restaurant->cuisine_style}}" placeholder="{{__('admin.enter_cuisine_style')}}">
+                       value="{{$restaurant->cuisine_style}}" required="required"
+                       placeholder="{{__('admin.enter_cuisine_style')}}">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="popular_menu">{{__('admin.popular_menu')}}:</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="popular_menu" name="popular_menu"
-                       value="{{$restaurant->popular_menu}}" placeholder="{{__('admin.enter_pop_menu')}}">
+                       value="{{$restaurant->popular_menu}}" required="required"
+                       placeholder="{{__('admin.enter_pop_menu')}}">
             </div>
         </div>
         <div class="form-group">
@@ -338,60 +342,64 @@
 
                     var cloned_node;
                     var dining_table;
-                    for (var idx = 0; idx < data.new_tables.length; idx++) {
-                        dining_table = data.new_tables[idx];
+                    var number_of_records = data.new_tables.length;
+                    if (number_of_records > 0) {
+                        for (var idx = 0; idx < number_of_records; idx++) {
+                            dining_table = data.new_tables[idx];
 
-                        // clone
-                        cloned_node = $("#edit_table_line").clone();
+                            // clone
+                            cloned_node = $("#edit_table_line").clone();
 
-                        cloned_node.removeAttr("hidden");
-                        cloned_node.attr('id', 'edit_table_line' + idx);
+                            cloned_node.removeAttr("hidden");
+                            cloned_node.attr('id', 'edit_table_line' + idx);
 
-                        // set id
-                        cloned_node.find("#table_id").attr('value', dining_table.id);
-                        // set table_number
-                        cloned_node.find("#table_number").attr('value', dining_table.table_number);
-                        // set number of person
-                        cloned_node.find("#number_of_person").prop("selectedIndex", dining_table.number_of_person - 1);
-                        // set seating type
-                        cloned_node.find("#seating_type").prop("selectedIndex", dining_table.seating_type - 1);
-                        // set is available
-                        if (dining_table.is_available == 1) {
-                            cloned_node.find("#is_available1").prop("checked", true);
-                        } else {
-                            cloned_node.find("#is_available2").prop("checked", true);
+                            // set id
+                            cloned_node.find("#table_id").attr('value', dining_table.id);
+                            // set table_number
+                            cloned_node.find("#table_number").attr('value', dining_table.table_number);
+                            // set number of person
+                            cloned_node.find("#number_of_person").prop("selectedIndex", dining_table.number_of_person - 1);
+                            // set seating type
+                            cloned_node.find("#seating_type").prop("selectedIndex", dining_table.seating_type - 1);
+                            // set is available
+                            if (dining_table.is_available == 1) {
+                                cloned_node.find("#is_available1").prop("checked", true);
+                            } else {
+                                cloned_node.find("#is_available2").prop("checked", true);
+                            }
+                            // set smoking_area
+                            if (dining_table.smoking_area == 1) {
+                                cloned_node.find("#smoking_area1").prop("checked", true);
+                            } else {
+                                cloned_node.find("#smoking_area2").prop("checked", true);
+                            }
+
+                            // change id & name for table_id
+                            cloned_node.find("#table_id").attr("name", "table_id" + idx).attr("id", "table_id" + idx);
+                            // change id & name for table_number
+                            cloned_node.find("#table_number").attr("name", "table_number" + idx).attr("id", "table_number" + idx);
+                            // change id & name for number_of_person
+                            cloned_node.find("#number_of_person").attr("name", "number_of_person" + idx).attr("id", "number_of_person" + idx);
+                            // change id & name for seating_type
+                            cloned_node.find("#seating_type").attr("name", "seating_type" + idx).attr("id", "seating_type" + idx);
+                            // change id & name for is_available
+                            cloned_node.find("#is_available1").attr("name", "is_available" + idx).attr("id", "is_available1" + idx);
+                            cloned_node.find("#is_available2").attr("name", "is_available" + idx).attr("id", "is_available2" + idx);
+                            // change id & name for smoking_area
+                            cloned_node.find("#smoking_area1").attr("name", "smoking_area" + idx).attr("id", "smoking_area1" + idx);
+                            cloned_node.find("#smoking_area2").attr("name", "smoking_area" + idx).attr("id", "smoking_area2" + idx);
+                            // change id & name for delete_flag
+                            cloned_node.find("#delete_flag").attr("name", "delete_flag" + idx).attr("id", "delete_flag" + idx);
+
+                            // append table line to table
+                            cloned_node.appendTo("#edit_table_body");
+
                         }
-                        // set smoking_area
-                        if (dining_table.smoking_area == 1) {
-                            cloned_node.find("#smoking_area1").prop("checked", true);
-                        } else {
-                            cloned_node.find("#smoking_area2").prop("checked", true);
-                        }
 
-                        // change id & name for table_id
-                        cloned_node.find("#table_id").attr("name", "table_id" + idx).attr("id", "table_id" + idx);
-                        // change id & name for table_number
-                        cloned_node.find("#table_number").attr("name", "table_number" + idx).attr("id", "table_number" + idx);
-                        // change id & name for number_of_person
-                        cloned_node.find("#number_of_person").attr("name", "number_of_person" + idx).attr("id", "number_of_person" + idx);
-                        // change id & name for seating_type
-                        cloned_node.find("#seating_type").attr("name", "seating_type" + idx).attr("id", "seating_type" + idx);
-                        // change id & name for is_available
-                        cloned_node.find("#is_available1").attr("name", "is_available" + idx).attr("id", "is_available1" + idx);
-                        cloned_node.find("#is_available2").attr("name", "is_available" + idx).attr("id", "is_available2" + idx);
-                        // change id & name for smoking_area
-                        cloned_node.find("#smoking_area1").attr("name", "smoking_area" + idx).attr("id", "smoking_area1" + idx);
-                        cloned_node.find("#smoking_area2").attr("name", "smoking_area" + idx).attr("id", "smoking_area2" + idx);
-                        // change id & name for delete_flag
-                        cloned_node.find("#delete_flag").attr("name", "delete_flag" + idx).attr("id", "delete_flag" + idx);
-
-                        // append table line to table
-                        cloned_node.appendTo("#edit_table_body");
-
+                        // prompt a information message
+                        alert('Successful: dining table information has been updated.');
                     }
 
-                    // prompt a information message
-                    alert('Successful: dining table information has been updated.');
 
                 },
 
